@@ -9,7 +9,8 @@ class FetchData {
         if(response.isSuccessful){
             val temperature_2m = response.body()?.hourly?.temperature_2m
             val time = response.body()?.hourly?.time
-            return WeatherData(temperature_2m, time)
+            val weatherCode = response.body()?.hourly?.weatherCode
+            return WeatherData(temperature_2m, time, weatherCode)
         }
         else{
             return null

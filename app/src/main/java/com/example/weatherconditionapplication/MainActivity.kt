@@ -56,7 +56,7 @@ class MainActivity : ComponentActivity() {
             val response = FetchData().getWeatherData(latitude, longitude)
             val weatherInfo = response?.let { createWeatherInfoList(it) }
             if (weatherInfo != null) {
-                Log.d("response", "hour: ${weatherInfo.get(0).time} and temperature: ${weatherInfo.get(0).temperature} ")
+                Log.d("response", "hour: ${weatherInfo.get(0).time} and temperature: ${weatherInfo.get(0).temperature} and weatherCode:  ")
             }
         }
         fusedConnectionClient = LocationServices.getFusedLocationProviderClient(this)
