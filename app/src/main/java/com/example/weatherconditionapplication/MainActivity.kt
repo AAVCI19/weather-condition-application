@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.currentRecomposeScope
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,15 +51,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val latitude = 52.52
-        val longitude = 13.41
-        GlobalScope.launch {
-            val response = FetchData().getWeatherData(latitude, longitude)
-            val weatherInfo = response?.let { createWeatherInfoList(it) }
-            if (weatherInfo != null) {
-                Log.d("response", "hour: ${weatherInfo.get(0).time} and temperature: ${weatherInfo.get(0).temperature} and weatherCode:  ")
-            }
-        }
         fusedConnectionClient = LocationServices.getFusedLocationProviderClient(this)
 
 
@@ -70,6 +62,13 @@ class MainActivity : ComponentActivity() {
                 override fun onLocationResult(p0: LocationResult) {
                     for (location in p0.locations){
                         currentLocation = LatLng(location.latitude, location.longitude)
+                    }
+                    GlobalScope.launch {
+                        val response = FetchData().getWeatherData(currentLocation.latitude, currentLocation.longitude)
+                        val weatherInfo = response?.let { createWeatherInfoList(it) }
+                        if (weatherInfo != null) {
+                            Log.d("response", "Time: ${weatherInfo.get(0).time}, Temperature: ${weatherInfo.get(0).temperatureDegree} WeatherCode: ${weatherInfo.get(0).weatherType}")
+                        }
                     }
                 }
             }
@@ -139,6 +138,7 @@ class MainActivity : ComponentActivity() {
                         })
                     {
                         startLocationUpdates(fusedConnectionClient)
+
                     }
                     else {
                         requestPermissionLauncher.launch(permissions)

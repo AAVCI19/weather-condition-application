@@ -2,15 +2,16 @@ package com.example.weatherconditionapplication.data
 
 import com.example.weatherconditionapplication.api.RetrofitHelper
 import com.example.weatherconditionapplication.api.WeatherData
+import com.example.weatherconditionapplication.api.WeatherResponseData
 
 class FetchData {
-    suspend fun getWeatherData(latitude: Double, longitude: Double): WeatherData? {
+    suspend fun getWeatherData(latitude: Double, longitude: Double): WeatherResponseData? {
         val response = RetrofitHelper.weatherApiService.getWeatherResponseData(latitude, longitude)
         if(response.isSuccessful){
-            val temperature_2m = response.body()?.hourly?.temperature_2m
-            val time = response.body()?.hourly?.time
-            val weatherCode = response.body()?.hourly?.weatherCode
-            return WeatherData(temperature_2m, time, weatherCode)
+            val time = response.body()?.weatherData?.time
+            val temperatures = response.body()?.weatherData?.temperatures
+            val weatherCode = response.body()?.weatherData?.weatherCodes
+            return WeatherResponseData(time,temperatures, weatherCode)
         }
         else{
             return null

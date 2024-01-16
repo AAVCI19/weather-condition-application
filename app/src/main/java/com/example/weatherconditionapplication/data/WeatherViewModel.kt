@@ -4,12 +4,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.weatherconditionapplication.api.WeatherData
+import com.example.weatherconditionapplication.api.WeatherResponseData
 import com.google.android.gms.maps.model.LatLng
 
-fun createWeatherInfoList(weatherData: WeatherData): List<WeatherInfo>{
-    val weatherInfoList = mutableListOf<WeatherInfo>()
-    for ((index, value) in weatherData.time?.withIndex()!!){
-        weatherInfoList.add(WeatherInfo(weatherData.temperature_2m?.get(index), value))
+fun createWeatherInfoList(WeatherResponseData: WeatherResponseData): List<WeatherDataInfo>{
+    val weatherInfoList = mutableListOf<WeatherDataInfo>()
+    for (i in 0 until WeatherResponseData.time!!.size) {
+        val weatherDataInfo = WeatherDataInfo(
+            WeatherResponseData.time!!.get(i),
+            WeatherResponseData.temperatures!!.get(i),
+            WeatherResponseData.weatherCodes!!.get(i)
+        )
+        weatherInfoList.add(weatherDataInfo)
     }
     return weatherInfoList
 }
