@@ -9,5 +9,5 @@ interface WeatherApi {
     suspend fun getWeatherResponseData(
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
-    ): Response<WeatherResponseData>
+    ): Response<WeatherData>
 }
