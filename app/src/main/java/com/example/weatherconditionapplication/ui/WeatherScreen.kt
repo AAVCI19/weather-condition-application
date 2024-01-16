@@ -3,12 +3,15 @@ package com.example.weatherconditionapplication.ui
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -42,6 +45,7 @@ fun WeatherScreen(
         ){
             Text(
                 text = "${weatherUiState.currentLocation}",
+                //text = "${weatherUiState.weatherInfoList[0].temperatureDegree}",
                 //text = "Uskumruköy",
                 fontSize = 20.sp,
                 style = MaterialTheme.typography.titleSmall,
@@ -60,15 +64,11 @@ fun WeatherScreen(
         ){
             //Text (text = "Hello")
             DailySummaryRow(weatherUiState, modifier)
-            //WeeklySummaryRow(weatherUiState, modifier)
+            Spacer(modifier = Modifier.height(10.dp))
+            WeeklySummaryRow(weatherUiState, modifier)
         }
     }
 
-}
-
-@Composable
-fun WeeklySummaryRow(weatherUiState: WeatherUiState, modifier: Modifier) {
-    TODO("Not yet implemented")
 }
 
 @Composable
@@ -100,15 +100,57 @@ fun DailySummaryRow(
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
         }
+        Spacer(modifier = Modifier.height(10.dp))
         Divider(
             color = MaterialTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier
                 .height(1.dp)
                 .fillMaxWidth()
         )
+    }
+}
 
+@Composable
+fun WeeklySummaryRow(
+    weatherUiState: WeatherUiState,
+    modifier: Modifier
+) {
+    LazyRow(
+        //columns = GridCells.Fixed(1),
+        contentPadding = PaddingValues(start = 15.dp, end = 15.dp, bottom = 10.dp),
+    ){
+        val daysOfWeek = listOf("TUE", "WED", "THU", "FRI", "SAT", "SUN")
+        items(6){
+            WeekDayItem(
+                weatherUiState = weatherUiState,
+                modifier = modifier,
+                day = daysOfWeek[it]
+            )
+        }
 
     }
+}
 
+@Composable
+fun WeekDayItem(
+    weatherUiState: WeatherUiState,
+    modifier: Modifier,
+    day: String
+) {
+    Column(
+        modifier = Modifier.fillMaxHeight().fillMaxWidth()
+    ){
+        Text (
+            text = day,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+        Spacer(modifier = Modifier.height(5.dp))
+        Text (
+            text = "Degrees",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+    }
 }
 
