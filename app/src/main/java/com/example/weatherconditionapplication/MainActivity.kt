@@ -33,11 +33,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.weatherconditionapplication.data.FetchData
 import com.example.weatherconditionapplication.data.WeatherUiState
 import com.example.weatherconditionapplication.data.WeatherViewModel
-import com.example.weatherconditionapplication.data.createWeatherInfoList
-import com.example.weatherconditionapplication.data.currentLocation
-import com.example.weatherconditionapplication.data.locationRequired
-import com.example.weatherconditionapplication.data.setCurrentLocation
-import com.example.weatherconditionapplication.data.setLocationRequired
 import com.example.weatherconditionapplication.ui.WeatherScreen
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -53,6 +48,8 @@ class MainActivity : ComponentActivity() {
     private lateinit var fusedConnectionClient: FusedLocationProviderClient
     private lateinit var locationCallBack: LocationCallback
 
+    private val _locationRequired = mutableStateOf(false)
+    val locationRequired = _locationRequired
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
