@@ -53,13 +53,6 @@ fun WeatherScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ){
-            /*
-            weatherUiState.weatherInfoList[0]?.let { weatherInfo ->
-                Text(text = "List: ${weatherInfo.weatherType}")
-            }
-
-             */
-
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = "${weatherUiState.currentLocation}",
@@ -200,15 +193,15 @@ fun DayDetailsRow(items: List<WeatherDataInfo>, modifier: Modifier) {
             style = MaterialTheme.typography.titleSmall,
             color = MaterialTheme.colorScheme.onPrimaryContainer
         )
-        LazyColumn(
-            contentPadding = PaddingValues(start = 15.dp, end = 15.dp, bottom = 10.dp),
+    }
+    LazyColumn(
+        contentPadding = PaddingValues(start = 15.dp, end = 15.dp, bottom = 10.dp),
         ){
             items(items.take(24)) {
                 HourlyRow(it, modifier)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
-    }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -219,13 +212,13 @@ fun HourlyRow(weatherDataInfo: WeatherDataInfo, modifier: Modifier) {
     ){
         Text( text = weatherDataInfo.time.format(
             DateTimeFormatter.ofPattern("HH:mm")),
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(modifier = Modifier.width(10.dp))
         Text(
             text = "${weatherDataInfo.temperatureDegree}",
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(modifier = Modifier.width(10.dp))
