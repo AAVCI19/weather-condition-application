@@ -3,6 +3,7 @@ package com.example.weatherconditionapplication.ui
 import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -27,10 +28,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.weatherconditionapplication.data.WeatherViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.weatherconditionapplication.R
 import com.example.weatherconditionapplication.api.WeatherData
 import com.example.weatherconditionapplication.data.WeatherDataInfo
 import com.example.weatherconditionapplication.data.WeatherUiState
@@ -39,6 +43,7 @@ import java.time.format.DateTimeFormatter
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun WeatherScreen(
+    viewModel: WeatherViewModel,
     weatherUiState: WeatherUiState,
     modifier: Modifier = Modifier,
 ){
@@ -89,7 +94,7 @@ fun WeatherScreen(
             ),
             shape = RoundedCornerShape(10.dp)
         ){
-            DayDetailsRow(weatherUiState.weatherInfoList, modifier)
+            DayDetailsRow(viewModel, weatherUiState.weatherInfoList, modifier)
         }
     }
 
@@ -151,7 +156,6 @@ fun WeeklySummaryRow(
                 day = daysOfWeek[it]
             )
         }
-
     }
 }
 
@@ -182,7 +186,7 @@ fun WeekDayItem(
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun DayDetailsRow(items: List<WeatherDataInfo>, modifier: Modifier) {
+fun DayDetailsRow(viewModel: WeatherViewModel, items: List<WeatherDataInfo>, modifier: Modifier) {
     Row(
         modifier = modifier.fillMaxWidth()
     ){
@@ -199,7 +203,7 @@ fun DayDetailsRow(items: List<WeatherDataInfo>, modifier: Modifier) {
         contentPadding = PaddingValues(start = 15.dp, end = 15.dp, bottom = 10.dp),
         ){
             items(items.take(24)) {
-                HourlyRow(it, modifier)
+                HourlyRow(viewModel, it, modifier)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
@@ -207,24 +211,58 @@ fun DayDetailsRow(items: List<WeatherDataInfo>, modifier: Modifier) {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HourlyRow(weatherDataInfo: WeatherDataInfo, modifier: Modifier) {
+fun HourlyRow(viewModel: WeatherViewModel, weatherDataInfo: WeatherDataInfo, modifier: Modifier) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(20.dp)
+            .height(70.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+
     ){
-        Text( text = weatherDataInfo.time.format(
-            DateTimeFormatter.ofPattern("HH:mm")),
+
+        var imageRes = R.drawable.sunny
+        when (weatherDataInfo.weatherType) {
+            in listOf(3,45,48) -> {
+                imageRes = R.drawable.foggy
+            }
+            in listOf(51,53,55,56,57,61,63,65,66,67,80,81,82) -> {
+                imageRes = R.drawable.drizzle
+            }
+            in listOf(71,73,75,77,85,86) -> {
+                imageRes = R.drawable.snowy
+            }
+            in listOf(95,96,99) -> {
+                imageRes = R.drawable.thunderstorm
+            }
+        }
+
+        Text(
+            text = viewModel.getHourlySummary(weatherDataInfo).hour,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+
+        Spacer(modifier = Modifier.width(10.dp))
+        Text(
+            text = "${weatherDataInfo.temperatureDegree}°C",
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(modifier = Modifier.width(10.dp))
         Text(
-            text = "${weatherDataInfo.temperatureDegree}",
+            text = viewModel.getHourlySummary(weatherDataInfo).desc,
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(modifier = Modifier.width(10.dp))
+        Image(
+            painter = painterResource(id = viewModel.getHourlySummary(weatherDataInfo).imageResource),
+            contentDescription = null,
+            modifier = Modifier
+                .width(50.dp)
+                .height(50.dp)
+        )
     }
 }
 

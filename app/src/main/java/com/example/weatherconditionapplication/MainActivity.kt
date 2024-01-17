@@ -125,7 +125,7 @@ class MainActivity : ComponentActivity() {
     private fun locationScreen(context: Context, viewModel: WeatherViewModel, weatherUiState: WeatherUiState){
 
         if (weatherUiState.currentLocation != LatLng(0.0,0.0)){
-            WeatherScreen(weatherUiState = weatherUiState)
+            WeatherScreen(viewModel = viewModel, weatherUiState = weatherUiState)
         } else {
         val requestPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){
                 permission ->
