@@ -3,6 +3,7 @@ package com.example.weatherconditionapplication
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
@@ -11,6 +12,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -53,6 +55,7 @@ class MainActivity : ComponentActivity() {
     private val _locationRequired = mutableStateOf(false)
     val locationRequired = _locationRequired
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         fusedConnectionClient = LocationServices.getFusedLocationProviderClient(this)
@@ -122,6 +125,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @Composable
     private fun locationScreen(context: Context, viewModel: WeatherViewModel, weatherUiState: WeatherUiState){
 

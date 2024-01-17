@@ -184,6 +184,8 @@ fun WeeklySummaryRow(
     LazyRow(
         //columns = GridCells.Fixed(1),
         contentPadding = PaddingValues(start = 15.dp, end = 15.dp, bottom = 10.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+
     ){
         val daysOfWeek = listOf("TUE", "WED", "THU", "FRI", "SAT", "SUN")
         items(6){
@@ -205,7 +207,7 @@ fun WeekDayItem(
     Column(
         modifier = Modifier
             //.fillMaxHeight()
-            .fillMaxWidth()
+            .width(60.dp)
     ){
         Text (
             text = day,
@@ -222,7 +224,7 @@ fun WeekDayItem(
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text (
-            text = "$day" + "6°C",
+            text = "6°C",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
@@ -267,7 +269,7 @@ fun HourlyRow(viewModel: WeatherViewModel, weatherDataInfo: WeatherDataInfo, mod
         horizontalArrangement = Arrangement.SpaceBetween
 
     ){
-
+/*
         var imageRes = R.drawable.sunny
         when (weatherDataInfo.weatherType) {
             in listOf(3,45,48) -> {
@@ -283,6 +285,8 @@ fun HourlyRow(viewModel: WeatherViewModel, weatherDataInfo: WeatherDataInfo, mod
                 imageRes = R.drawable.thunderstorm
             }
         }
+
+ */
 
         Text(
             text = viewModel.getHourlySummary(weatherDataInfo).hour,
