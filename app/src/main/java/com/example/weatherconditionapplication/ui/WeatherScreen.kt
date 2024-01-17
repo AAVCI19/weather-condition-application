@@ -237,10 +237,10 @@ fun DayDetailsRow(viewModel: WeatherViewModel, items: List<WeatherDataInfo>, mod
     Row(
         modifier = modifier.fillMaxWidth()
     ){
+
         Spacer(modifier = Modifier.height(5.dp))
         Text(
             text = "MONDAY, JANUARY 15",
-            //text = "Weather code: ${weatherUiState.weatherInfoList[0].temperatureDegree}",
             fontSize = 20.sp,
             style = MaterialTheme.typography.titleSmall,
             color = MaterialTheme.colorScheme.onPrimaryContainer
@@ -269,25 +269,6 @@ fun HourlyRow(viewModel: WeatherViewModel, weatherDataInfo: WeatherDataInfo, mod
         horizontalArrangement = Arrangement.SpaceBetween
 
     ){
-/*
-        var imageRes = R.drawable.sunny
-        when (weatherDataInfo.weatherType) {
-            in listOf(3,45,48) -> {
-                imageRes = R.drawable.foggy
-            }
-            in listOf(51,53,55,56,57,61,63,65,66,67,80,81,82) -> {
-                imageRes = R.drawable.drizzle
-            }
-            in listOf(71,73,75,77,85,86) -> {
-                imageRes = R.drawable.snowy
-            }
-            in listOf(95,96,99) -> {
-                imageRes = R.drawable.thunderstorm
-            }
-        }
-
- */
-
         Text(
             text = viewModel.getHourlySummary(weatherDataInfo).hour,
             style = MaterialTheme.typography.bodyLarge,
@@ -317,27 +298,4 @@ fun HourlyRow(viewModel: WeatherViewModel, weatherDataInfo: WeatherDataInfo, mod
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun HourlyWeather(
-    weatherUiState: WeatherUiState,
-    modifier: Modifier,
-){
-    for (index in weatherUiState.weatherInfoList.indices) {
-        if (index < 24){
-            Row(
-                modifier = modifier.fillMaxWidth()
-            ){
-                Text( text = weatherUiState.weatherInfoList[index].time.format(
-                    DateTimeFormatter.ofPattern("HH")
-                ))
-                Spacer(modifier = Modifier.width(2.dp))
-                Text( text = "${weatherUiState.weatherInfoList[index].temperatureDegree}")
-                Spacer(modifier = Modifier.width(2.dp))
-            }
-
-        }
-
-    }
-}
 

@@ -90,7 +90,6 @@ class MainActivity : ComponentActivity() {
                         }
                         if (weatherInfo != null) {
                             Log.d("response", "Time: ${weatherInfo.get(0).time}, Temperature: ${weatherInfo.get(0).temperatureDegree} WeatherCode: ${weatherInfo.get(0).weatherType}")
-                            //Log.d("response", "Time: ${weatherUiState.weatherInfoList.get(0).time}, Temperature: ${weatherUiState.weatherInfoList.get(0).temperatureDegree} WeatherCode: ${weatherUiState.weatherInfoList.get(0).weatherType}")
                         }
                     }
                 }
@@ -140,95 +139,91 @@ class MainActivity : ComponentActivity() {
         if (weatherUiState.currentLocation != LatLng(0.0,0.0)){
             WeatherScreen(viewModel = viewModel, weatherUiState = weatherUiState)
         } else {
-        val requestPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){
-                permission ->
-            val granted = permission.values.all { it }
-            if(granted){
-                viewModel.setLocationRequired(true)
-                startLocationUpdates(fusedConnectionClient)
-                Toast.makeText(context, "Permission granted", Toast.LENGTH_SHORT).show()
-            }
-            else{
-                Toast.makeText(context, "Permission denied", Toast.LENGTH_SHORT).show()
-            }
-        }
-        val permissions = arrayOf(
-            android.Manifest.permission.ACCESS_COARSE_LOCATION,
-            android.Manifest.permission.ACCESS_FINE_LOCATION
-        )
-
-
-            Box(modifier = Modifier.fillMaxSize()){
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    //verticalArrangement = Arrangement.Bottom,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-
-                    Image(
-                        painter = painterResource(id = R.drawable.partly_cloudy),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .width(200.dp)
-                            .height(200.dp)
-                    )
-                    Spacer(modifier = Modifier.height(50.dp))
-                    MaterialTheme(
-                        typography = AppTypography
-                    ) {
-                        Text(
-                            text = "Welcome to..",
-                            style = MaterialTheme.typography.titleSmall,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                        Text(
-                            text = "Weather App",
-                            style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(40.dp))
-                    Text(
-                        text = "With this App, you can see the daily and weekly weather forecast for your current location",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        textAlign = TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.height(20.dp))
-                    Button(
-                        onClick = {
-                        if (permissions.all {
-                                ContextCompat.checkSelfPermission(
-                                    context,
-                                    it
-                                ) == PackageManager.PERMISSION_GRANTED
-                            }) {
-                            startLocationUpdates(fusedConnectionClient)
-                            viewModel.setIsShowingWeatherPage(true)
-                            viewModel.SetLocationAdress(context, LatLng(weatherUiState.currentLocation.latitude, weatherUiState.currentLocation.longitude))
-
-                        } else {
-                            requestPermissionLauncher.launch(permissions)
-                        }
-                    }) {
-                        Text(
-                            text = "Show Weather Forecast",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
-
-                    }
-
+            val requestPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){
+                    permission ->
+                val granted = permission.values.all { it }
+                if(granted){
+                    viewModel.setLocationRequired(true)
+                    startLocationUpdates(fusedConnectionClient)
+                    Toast.makeText(context, "Permission granted", Toast.LENGTH_SHORT).show()
+                }
+                else{
+                    Toast.makeText(context, "Permission denied", Toast.LENGTH_SHORT).show()
                 }
             }
-        }
+            val permissions = arrayOf(
+                android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            )
 
 
+                Box(modifier = Modifier.fillMaxSize()){
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        //verticalArrangement = Arrangement.Bottom,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+
+                        Image(
+                            painter = painterResource(id = R.drawable.partly_cloudy),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .width(200.dp)
+                                .height(200.dp)
+                        )
+                        Spacer(modifier = Modifier.height(50.dp))
+                        MaterialTheme(
+                            typography = AppTypography
+                        ) {
+                            Text(
+                                text = "Welcome to..",
+                                style = MaterialTheme.typography.titleSmall,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                            Text(
+                                text = "Weather App",
+                                style = MaterialTheme.typography.titleLarge,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(40.dp))
+                        Text(
+                            text = "With this App, you can see the daily and weekly weather forecast for your current location",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Button(
+                            onClick = {
+                            if (permissions.all {
+                                    ContextCompat.checkSelfPermission(
+                                        context,
+                                        it
+                                    ) == PackageManager.PERMISSION_GRANTED
+                                }) {
+                                startLocationUpdates(fusedConnectionClient)
+                                viewModel.setIsShowingWeatherPage(true)
+                                viewModel.SetLocationAdress(context, LatLng(weatherUiState.currentLocation.latitude, weatherUiState.currentLocation.longitude))
+
+                            } else {
+                                requestPermissionLauncher.launch(permissions)
+                            }
+                        }) {
+                            Text(
+                                text = "Show Weather Forecast",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+
+                        }
+
+                    }
+                }
+            }
     }
-
-
 
 }
 

@@ -25,7 +25,10 @@ class WeatherViewModel : ViewModel(){
     val uiState: StateFlow<WeatherUiState> = _uiState
 
 
-    //fun createWeatherInfoList(weatherResponseData: WeatherResponseData) {
+    /**
+     * createWeatherInfoList() function takes as input a WeatherResponseData and returns the list of WeatherDataInfo
+     * This function serves the purpose of initializing the WeatherDataInfo obtained from API in WeatherDataInfo format
+     */
     fun createWeatherInfoList(weatherResponseData: WeatherResponseData) : List<WeatherDataInfo>{
         val weatherInfoList = mutableListOf<WeatherDataInfo>()
         for (i in 0 until weatherResponseData.time!!.size) {
@@ -72,6 +75,16 @@ class WeatherViewModel : ViewModel(){
         }
     }
 
+    /**
+     * getHourlySummary() function takes as input a WeatherDataInfo instance and returns the following:
+     *
+     * hour : hour information with AM/PM  (ex: 12 PM)
+     * desc : weather forecast description based on the weatherType  (ex: "Mainly Clear)
+     * imageResource : corresponding image resource ID for the weatherType
+     *
+     * Result data class is created to output hour, desc, and imageResource values at the same time
+     * Weather codes and the corresponding descriptions are taken from the API documentation
+     */
     data class Result (val hour: String, val desc: String, val imageResource: Int)
     fun getHourlySummary(weatherDataInfo: WeatherDataInfo): Result {
         var hour: String = ""
