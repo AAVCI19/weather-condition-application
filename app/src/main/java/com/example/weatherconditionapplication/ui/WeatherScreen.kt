@@ -60,7 +60,7 @@ fun WeatherScreen(
         ){
             Spacer(modifier = Modifier.height(10.dp))
             Text(
-                text = "${weatherUiState.currentLocation}",
+                text = "${weatherUiState.locationAdress} and location coordinates: ${weatherUiState.currentLocation.latitude} ${weatherUiState.currentLocation.longitude}",
                 //text = "${weatherUiState.weatherInfoList[0].temperatureDegree}",
                 //text = "Uskumruköy",
                 fontSize = 20.sp,

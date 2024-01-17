@@ -1,8 +1,15 @@
 package com.example.weatherconditionapplication.data
 
 import android.content.res.loader.ResourcesLoader
+import android.content.Context
+import android.location.Geocoder
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import com.example.weatherconditionapplication.R
 import com.example.weatherconditionapplication.api.WeatherResponseData
@@ -10,6 +17,7 @@ import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import java.util.Locale
 
 class WeatherViewModel : ViewModel(){
 
@@ -63,6 +71,7 @@ class WeatherViewModel : ViewModel(){
             )
         }
     }
+
     data class Result (val hour: String, val desc: String, val imageResource: Int)
     fun getHourlySummary(weatherDataInfo: WeatherDataInfo): Result {
         var hour: String = ""
@@ -118,6 +127,48 @@ class WeatherViewModel : ViewModel(){
 
         return Result(hour, desc, imageRes)
     }
+
+    @Suppress("DEPRECATION")
+    fun SetLocationAdress(context: Context, location: LatLng){
+        val geocoder = Geocoder(context, Locale.getDefault())
+        val addresses = geocoder.getFromLocation(41.112663, 29.021330, 1)
+        if(addresses != null){
+            if(addresses.isNotEmpty()){
+                val address = addresses[0]
+                val input = address.getAddressLine(0)
+                if(input.isNotEmpty()){
+                    _uiState.update{
+                        it.copy(
+                            locationAdress = input
+                        )
+                    }
+                }
+                else{
+                    _uiState.update{
+                        it.copy(
+                            locationAdress = "Not available adress"
+                        )
+                    }
+                }
+            }
+            else{
+                _uiState.update{
+                    it.copy(
+                        locationAdress = "empty adress"
+                    )
+                }
+            }
+        }
+        else{
+            _uiState.update{
+                it.copy(
+                    locationAdress = "null adress"
+                )
+            }
+        }
+
+    }
+
 
     /*
 

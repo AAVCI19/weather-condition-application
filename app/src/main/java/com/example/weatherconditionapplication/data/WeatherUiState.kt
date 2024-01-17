@@ -9,5 +9,6 @@ data class WeatherUiState(
     val locationRequired: MutableState<Boolean> = mutableStateOf(false),
     //val currentLocation: MutableState<LatLng> = mutableStateOf(LatLng(0.0.toDouble(), 0.0.toDouble())),
     val currentLocation: LatLng = LatLng(0.0.toDouble(), 0.0.toDouble()),
-    val isShowingWeatherPage: Boolean = true
+    val isShowingWeatherPage: Boolean = true,
+    val locationAdress: String = "Istanbul"
 )

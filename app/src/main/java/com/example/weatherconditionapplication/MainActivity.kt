@@ -28,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.weatherconditionapplication.data.FetchData
@@ -71,7 +72,7 @@ class MainActivity : ComponentActivity() {
                         viewModel.setCurrentLocation(currentLocation )
                     }
                     GlobalScope.launch {
-                        val response = FetchData().getWeatherData(currentLocation.latitude, currentLocation.longitude)
+                        val response = FetchData().getWeatherData(41.112663, 29.021330)
 
                         val weatherInfo = response?.let {
                             viewModel.createWeatherInfoList(it)
@@ -145,7 +146,7 @@ class MainActivity : ComponentActivity() {
         )
 
 
-            Box(modifier = Modifier.fillMaxSize()) {
+            Box(modifier = Modifier.fillMaxSize()){
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Bottom,
@@ -162,6 +163,8 @@ class MainActivity : ComponentActivity() {
                             }) {
                             startLocationUpdates(fusedConnectionClient)
                             viewModel.setIsShowingWeatherPage(true)
+                            viewModel.SetLocationAdress(context, LatLng(weatherUiState.currentLocation.latitude, weatherUiState.currentLocation.longitude))
+
 
                         } else {
                             requestPermissionLauncher.launch(permissions)
