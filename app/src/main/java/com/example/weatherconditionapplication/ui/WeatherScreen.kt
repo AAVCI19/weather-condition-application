@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -54,19 +55,44 @@ fun WeatherScreen(
         Row(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(0.dp, 10.dp),
+                .padding(10.dp, 20.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ){
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                text = "${weatherUiState.locationAdress} and location coordinates: ${weatherUiState.currentLocation.latitude} ${weatherUiState.currentLocation.longitude}",
-                //text = "${weatherUiState.weatherInfoList[0].temperatureDegree}",
-                //text = "Uskumruköy",
-                fontSize = 20.sp,
-                style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
-            )
+            Spacer(modifier = Modifier.size(10.dp))
+            Row(modifier = modifier){
+                Image(
+                    painter = painterResource(id = R.drawable.pin),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .width(70.dp)
+                        .height(70.dp)
+                )
+                Column(
+                    modifier = modifier
+                        .padding(10.dp)
+                ){
+                    Text(
+                        text = "${weatherUiState.locationAdress}",
+                        //text = "${weatherUiState.weatherInfoList[0].temperatureDegree}",
+                        //text = "Uskumruköy",
+                        fontSize = 15.sp,
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                    Spacer(modifier = Modifier.height(5.dp))
+                    Text(
+                        text = "(${weatherUiState.currentLocation.latitude} ${weatherUiState.currentLocation.longitude})",
+                        //text = "${weatherUiState.weatherInfoList[0].temperatureDegree}",
+                        //text = "Uskumruköy",
+                        fontSize = 10.sp,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
+
+            }
+
         }
         Card(
             modifier = Modifier
@@ -79,9 +105,9 @@ fun WeatherScreen(
             shape = RoundedCornerShape(10.dp),
         ){
             //Text (text = "Hello")
-            DailySummaryRow(weatherUiState, modifier)
+            DailySummaryRow(viewModel,weatherUiState, modifier)
             Spacer(modifier = Modifier.height(10.dp))
-            WeeklySummaryRow(weatherUiState, modifier)
+            WeeklySummaryRow(viewModel,weatherUiState, modifier)
 
         }
         Card(
@@ -102,6 +128,7 @@ fun WeatherScreen(
 
 @Composable
 fun DailySummaryRow(
+    viewModel: WeatherViewModel,
     weatherUiState: WeatherUiState,
     modifier: Modifier
 ) {
@@ -109,24 +136,33 @@ fun DailySummaryRow(
         modifier = modifier,
     ){
 
-        Column(
-            modifier = modifier,
-            horizontalAlignment = Alignment.Start
+        Row(
+            modifier = modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
         ){
-            Text(
-                text = "9°C",
-                //text = "${weatherUiState.weatherInfoList[0].temperatureDegree}°C",
-                fontSize = 50.sp,
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                text = "Mostly sunny",
-                //text = "Weather code: ${weatherUiState.weatherInfoList[0].temperatureDegree}",
-                fontSize = 20.sp,
-                style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
+            Column(modifier = modifier ){
+                Text(
+                    text = "9°C",
+                    //text = "${weatherUiState.weatherInfoList[0].temperatureDegree}°C",
+                    fontSize = 50.sp,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(
+                    text = "Mostly sunny",
+                    //text = "Weather code: ${weatherUiState.weatherInfoList[0].temperatureDegree}",
+                    fontSize = 20.sp,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
+            Image(
+                painter = painterResource(id = R.drawable.sunny),
+                contentDescription = null,
+                modifier = Modifier
+                    .width(70.dp)
+                    .height(70.dp)
             )
         }
         Spacer(modifier = Modifier.height(5.dp))
@@ -141,6 +177,7 @@ fun DailySummaryRow(
 
 @Composable
 fun WeeklySummaryRow(
+    viewModel: WeatherViewModel,
     weatherUiState: WeatherUiState,
     modifier: Modifier
 ) {
@@ -176,8 +213,16 @@ fun WeekDayItem(
             color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(modifier = Modifier.height(8.dp))
+        Image(
+            painter = painterResource(id = R.drawable.sunny),
+            contentDescription = null,
+            modifier = Modifier
+                .width(20.dp)
+                .height(20.dp)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
         Text (
-            text = "Degrees",
+            text = "$day" + "6°C",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
@@ -190,6 +235,7 @@ fun DayDetailsRow(viewModel: WeatherViewModel, items: List<WeatherDataInfo>, mod
     Row(
         modifier = modifier.fillMaxWidth()
     ){
+        Spacer(modifier = Modifier.height(5.dp))
         Text(
             text = "MONDAY, JANUARY 15",
             //text = "Weather code: ${weatherUiState.weatherInfoList[0].temperatureDegree}",
@@ -197,6 +243,7 @@ fun DayDetailsRow(viewModel: WeatherViewModel, items: List<WeatherDataInfo>, mod
             style = MaterialTheme.typography.titleSmall,
             color = MaterialTheme.colorScheme.onPrimaryContainer
         )
+        Spacer(modifier = Modifier.height(5.dp))
     }
     Spacer(modifier = Modifier.height(8.dp))
     LazyColumn(
