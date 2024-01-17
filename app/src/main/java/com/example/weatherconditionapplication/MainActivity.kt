@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.currentRecomposeScope
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,12 +29,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.weatherconditionapplication.data.FetchData
-import com.example.weatherconditionapplication.data.createWeatherInfoList
-import com.example.weatherconditionapplication.data.currentLocation
-import com.example.weatherconditionapplication.data.locationRequired
-import com.example.weatherconditionapplication.data.setCurrentLocation
-import com.example.weatherconditionapplication.data.setLocationRequired
+import com.example.weatherconditionapplication.data.WeatherUiState
+import com.example.weatherconditionapplication.data.WeatherViewModel
+import com.example.weatherconditionapplication.ui.WeatherScreen
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -48,6 +48,8 @@ class MainActivity : ComponentActivity() {
     private lateinit var fusedConnectionClient: FusedLocationProviderClient
     private lateinit var locationCallBack: LocationCallback
 
+    private val _locationRequired = mutableStateOf(false)
+    val locationRequired = _locationRequired
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +57,9 @@ class MainActivity : ComponentActivity() {
 
 
         setContent{
+            val viewModel: WeatherViewModel = viewModel()
+            val weatherUiState = viewModel.uiState.collectAsState().value
+
             var currentLocation by remember {
                 mutableStateOf(LatLng(0.0.toDouble(), 0.0.toDouble()))
             }
@@ -62,12 +67,17 @@ class MainActivity : ComponentActivity() {
                 override fun onLocationResult(p0: LocationResult) {
                     for (location in p0.locations){
                         currentLocation = LatLng(location.latitude, location.longitude)
+                        viewModel.setCurrentLocation(currentLocation )
                     }
                     GlobalScope.launch {
                         val response = FetchData().getWeatherData(currentLocation.latitude, currentLocation.longitude)
-                        val weatherInfo = response?.let { createWeatherInfoList(it) }
+
+                        val weatherInfo = response?.let {
+                            viewModel.createWeatherInfoList(it)
+                        }
                         if (weatherInfo != null) {
                             Log.d("response", "Time: ${weatherInfo.get(0).time}, Temperature: ${weatherInfo.get(0).temperatureDegree} WeatherCode: ${weatherInfo.get(0).weatherType}")
+                            //Log.d("response", "Time: ${weatherUiState.weatherInfoList.get(0).time}, Temperature: ${weatherUiState.weatherInfoList.get(0).temperatureDegree} WeatherCode: ${weatherUiState.weatherInfoList.get(0).weatherType}")
                         }
                     }
                 }
@@ -76,7 +86,7 @@ class MainActivity : ComponentActivity() {
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.background
             ) {
-                locationScreen(this@MainActivity, currentLocation)
+                locationScreen(this@MainActivity, viewModel, weatherUiState)
             }
         }
     }
@@ -108,12 +118,16 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun locationScreen(context: Context, currentLocation: LatLng){
+    private fun locationScreen(context: Context, viewModel: WeatherViewModel, weatherUiState: WeatherUiState){
+
+        if (weatherUiState.currentLocation != LatLng(0.0,0.0)){
+            WeatherScreen(weatherUiState = weatherUiState)
+        } else {
         val requestPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){
                 permission ->
             val granted = permission.values.all { it }
             if(granted){
-                setLocationRequired(true)
+                viewModel.setLocationRequired(true)
                 startLocationUpdates(fusedConnectionClient)
                 Toast.makeText(context, "Permission granted", Toast.LENGTH_SHORT).show()
             }
@@ -127,30 +141,37 @@ class MainActivity : ComponentActivity() {
         )
 
 
-        Box(modifier = Modifier.fillMaxSize()){
-            Column(modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Bottom,
-                horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = "Your location ${currentLocation.latitude} and ${currentLocation.longitude}")
-                Button(onClick = {
-                    if(permissions.all {
-                            ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
-                        })
-                    {
-                        startLocationUpdates(fusedConnectionClient)
+            Box(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Bottom,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(text = "Your location ${weatherUiState.currentLocation.latitude} and ${weatherUiState.currentLocation.longitude}")
+                    Text(text = "List: ${weatherUiState.weatherInfoList}")
+                    Button(onClick = {
+                        if (permissions.all {
+                                ContextCompat.checkSelfPermission(
+                                    context,
+                                    it
+                                ) == PackageManager.PERMISSION_GRANTED
+                            }) {
+                            startLocationUpdates(fusedConnectionClient)
+                            viewModel.setIsShowingWeatherPage(true)
+
+                        } else {
+                            requestPermissionLauncher.launch(permissions)
+
+                        }
+                    }) {
+
 
                     }
-                    else {
-                        requestPermissionLauncher.launch(permissions)
 
-                    }
-                }) {
-
-                    
                 }
-
             }
         }
+
 
     }
 
