@@ -1,15 +1,8 @@
 package com.example.weatherconditionapplication.data
 
-import android.content.res.loader.ResourcesLoader
 import android.content.Context
 import android.location.Geocoder
-import android.os.Build
-import android.util.Log
-import androidx.annotation.RequiresApi
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import com.example.weatherconditionapplication.R
 import com.example.weatherconditionapplication.api.WeatherResponseData
@@ -102,11 +95,10 @@ class WeatherViewModel : ViewModel(){
 
         val maxEntry = weatherTypeMap.maxByOrNull { it.value }
 
-        val keyWithMaxValue = 0
+        var keyWithMaxValue = 0
 
         if (maxEntry != null) {
-            val keyWithMaxValue = maxEntry.key
-            val maxValue = maxEntry.value
+            keyWithMaxValue = maxEntry.key
         }
         var desc = ""
         var imageRes = R.drawable.sunny
@@ -142,29 +134,8 @@ class WeatherViewModel : ViewModel(){
             99 -> { desc = "Heavy Hail Thunderstorm"; imageRes = R.drawable.thunderstorm }
             else -> { desc = "Clear Sky"; imageRes = R.drawable.sunny }
         }
-        /*
-        when (keyWithMaxValue) {
-            in listOf(3,45,48) -> {
-                imageRes = R.drawable.foggy
-            }
-            in listOf(51,53,55,56,57,61,63,65,66,67,80,81,82) -> {
-                imageRes = R.drawable.drizzle
-            }
-            in listOf(71,73,75,77,85,86) -> {
-                imageRes = R.drawable.snowy
-            }
-            in listOf(95,96,99) -> {
-                imageRes = R.drawable.thunderstorm
-            }
-            in listOf(2) -> {
-                imageRes = R.drawable.partly_cloudy
-            }
-        }
-
-         */
 
 
-        //var imageRes = R.drawable.sunny
         return DailyStats(minTemp, maxTemp, desc, imageRes)
 
     }
@@ -274,21 +245,4 @@ class WeatherViewModel : ViewModel(){
         }
 
     }
-
-
-    /*
-
-    private val _weatherInfo = MutableLiveData<WeatherData>()
-    val weatherInfo: LiveData<WeatherData> get() = _weatherInfo
-
-
-
-    private val _currentLocation = mutableStateOf(LatLng(0.0.toDouble(), 0.0.toDouble()))
-    val currentLocation = _currentLocation
-    fun setCurrentLocation(value: LatLng){
-        _currentLocation.value = value
-    }
-
-     */
-
 }
