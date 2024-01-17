@@ -14,6 +14,7 @@ class WeatherViewModel : ViewModel(){
     private val _uiState = MutableStateFlow(WeatherUiState())
     val uiState: StateFlow<WeatherUiState> = _uiState
 
+
     //fun createWeatherInfoList(weatherResponseData: WeatherResponseData) {
     fun createWeatherInfoList(weatherResponseData: WeatherResponseData) : List<WeatherDataInfo>{
         val weatherInfoList = mutableListOf<WeatherDataInfo>()

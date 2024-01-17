@@ -34,6 +34,7 @@ import com.example.weatherconditionapplication.data.FetchData
 import com.example.weatherconditionapplication.data.WeatherUiState
 import com.example.weatherconditionapplication.data.WeatherViewModel
 import com.example.weatherconditionapplication.ui.WeatherScreen
+import com.example.weatherconditionapplication.ui.theme.AppTheme
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -82,12 +83,15 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = MaterialTheme.colorScheme.background
-            ) {
-                locationScreen(this@MainActivity, viewModel, weatherUiState)
+            AppTheme{
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    locationScreen(this@MainActivity, viewModel, weatherUiState)
+                }
             }
+
         }
     }
 

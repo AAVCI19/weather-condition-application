@@ -194,6 +194,7 @@ fun DayDetailsRow(items: List<WeatherDataInfo>, modifier: Modifier) {
             color = MaterialTheme.colorScheme.onPrimaryContainer
         )
     }
+    Spacer(modifier = Modifier.height(8.dp))
     LazyColumn(
         contentPadding = PaddingValues(start = 15.dp, end = 15.dp, bottom = 10.dp),
         ){
@@ -208,7 +209,9 @@ fun DayDetailsRow(items: List<WeatherDataInfo>, modifier: Modifier) {
 @Composable
 fun HourlyRow(weatherDataInfo: WeatherDataInfo, modifier: Modifier) {
     Row(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
+            .height(20.dp)
     ){
         Text( text = weatherDataInfo.time.format(
             DateTimeFormatter.ofPattern("HH:mm")),
