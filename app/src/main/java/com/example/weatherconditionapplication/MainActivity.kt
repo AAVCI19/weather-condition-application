@@ -13,10 +13,14 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -31,6 +35,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.weatherconditionapplication.data.FetchData
@@ -38,6 +45,7 @@ import com.example.weatherconditionapplication.data.WeatherUiState
 import com.example.weatherconditionapplication.data.WeatherViewModel
 import com.example.weatherconditionapplication.ui.WeatherScreen
 import com.example.weatherconditionapplication.ui.theme.AppTheme
+import com.example.weatherconditionapplication.ui.theme.AppTypography
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -153,12 +161,44 @@ class MainActivity : ComponentActivity() {
             Box(modifier = Modifier.fillMaxSize()){
                 Column(
                     modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Bottom,
+                    verticalArrangement = Arrangement.Center,
+                    //verticalArrangement = Arrangement.Bottom,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = "Your location ${weatherUiState.currentLocation.latitude} and ${weatherUiState.currentLocation.longitude}")
-                    Text(text = "List: ${weatherUiState.weatherInfoList}")
-                    Button(onClick = {
+
+                    Image(
+                        painter = painterResource(id = R.drawable.partly_cloudy),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .width(200.dp)
+                            .height(200.dp)
+                    )
+                    Spacer(modifier = Modifier.height(50.dp))
+                    MaterialTheme(
+                        typography = AppTypography
+                    ) {
+                        Text(
+                            text = "Welcome to..",
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                        Text(
+                            text = "Weather App",
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(40.dp))
+                    Text(
+                        text = "With this App, you can see the daily and weekly weather forecast for your current location",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Button(
+                        onClick = {
                         if (permissions.all {
                                 ContextCompat.checkSelfPermission(
                                     context,
@@ -169,13 +209,15 @@ class MainActivity : ComponentActivity() {
                             viewModel.setIsShowingWeatherPage(true)
                             viewModel.SetLocationAdress(context, LatLng(weatherUiState.currentLocation.latitude, weatherUiState.currentLocation.longitude))
 
-
                         } else {
                             requestPermissionLauncher.launch(permissions)
-
                         }
                     }) {
-
+                        Text(
+                            text = "Show Weather Forecast",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
 
                     }
 
