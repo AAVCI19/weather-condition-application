@@ -39,7 +39,12 @@ import com.example.weatherconditionapplication.R
 import com.example.weatherconditionapplication.api.WeatherData
 import com.example.weatherconditionapplication.data.WeatherDataInfo
 import com.example.weatherconditionapplication.data.WeatherUiState
+import java.time.DayOfWeek
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+import java.time.temporal.TemporalAdjusters
+import java.util.Calendar
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -140,9 +145,12 @@ fun DailySummaryRow(
             modifier = modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ){
+            var dailyWeather = weatherUiState.weatherInfoList.take(24)
+            val avgTemp = (viewModel.getDailyStats(dailyWeather).maxTemp + viewModel.getDailyStats(dailyWeather).minTemp) / 2
+
             Column(modifier = modifier ){
                 Text(
-                    text = "9°C",
+                    text = "${avgTemp}°C",
                     //text = "${weatherUiState.weatherInfoList[0].temperatureDegree}°C",
                     fontSize = 50.sp,
                     style = MaterialTheme.typography.titleMedium,
@@ -150,7 +158,7 @@ fun DailySummaryRow(
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
-                    text = "Mostly sunny",
+                    text = viewModel.getDailyStats(dailyWeather).desc,
                     //text = "Weather code: ${weatherUiState.weatherInfoList[0].temperatureDegree}",
                     fontSize = 20.sp,
                     style = MaterialTheme.typography.titleSmall,
@@ -175,6 +183,7 @@ fun DailySummaryRow(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun WeeklySummaryRow(
     viewModel: WeatherViewModel,
@@ -187,13 +196,22 @@ fun WeeklySummaryRow(
         horizontalArrangement = Arrangement.SpaceBetween
 
     ){
-        val daysOfWeek = listOf("TUE", "WED", "THU", "FRI", "SAT", "SUN")
+        val currentDate = LocalDate.now().dayOfWeek
+        val longOne: Long = 1L
+
         items(6){
+
+            var dailyWeather = weatherUiState.weatherInfoList.take(24 * (it + 1)).takeLast(24)
+
             WeekDayItem(
                 weatherUiState = weatherUiState,
                 modifier = modifier,
-                day = daysOfWeek[it]
+                day = currentDate + (longOne * it + 1),
+                maxTemp = viewModel.getDailyStats(dailyWeather).maxTemp,
+                minTemp = viewModel.getDailyStats(dailyWeather).minTemp,
+                imageRes = viewModel.getDailyStats(dailyWeather).imageResource
             )
+            Spacer(modifier = Modifier.width(20.dp))
         }
     }
 }
@@ -202,29 +220,39 @@ fun WeeklySummaryRow(
 fun WeekDayItem(
     weatherUiState: WeatherUiState,
     modifier: Modifier,
-    day: String
+    day: DayOfWeek,
+    maxTemp: Double,
+    minTemp: Double,
+    imageRes: Int
 ) {
     Column(
         modifier = Modifier
             //.fillMaxHeight()
-            .width(60.dp)
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ){
         Text (
-            text = day,
-            style = MaterialTheme.typography.bodyMedium,
+            text = day.toString().take(3),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+        Image(
+            painter = painterResource(id = imageRes),
+            contentDescription = null,
+            modifier = Modifier
+                .width(40.dp)
+                .height(40.dp)
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+        Text (
+            text = "$maxTemp°C",
+            style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(modifier = Modifier.height(8.dp))
-        Image(
-            painter = painterResource(id = R.drawable.sunny),
-            contentDescription = null,
-            modifier = Modifier
-                .width(20.dp)
-                .height(20.dp)
-        )
-        Spacer(modifier = Modifier.height(8.dp))
         Text (
-            text = "6°C",
+            text = "$minTemp°C",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
@@ -238,12 +266,13 @@ fun DayDetailsRow(viewModel: WeatherViewModel, items: List<WeatherDataInfo>, mod
         modifier = modifier.fillMaxWidth()
     ){
 
-        Spacer(modifier = Modifier.height(5.dp))
+        Spacer(modifier = Modifier.size(5.dp))
         Text(
-            text = "MONDAY, JANUARY 15",
+            text = LocalDate.now().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)).toString(),
             fontSize = 20.sp,
             style = MaterialTheme.typography.titleSmall,
             color = MaterialTheme.colorScheme.onPrimaryContainer
+
         )
         Spacer(modifier = Modifier.height(5.dp))
     }
